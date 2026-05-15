@@ -3,193 +3,247 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>youllknow.me</title>
+  <title>youllknow.me — Justin Marshall</title>
   <meta name="description" content="Justin Marshall. You found it early." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&family=Satisfy&display=swap" rel="stylesheet" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink:       #0c0c0c;
-      --ink-mid:   #3d3d3d;
-      --ink-faint: #9a9a9a;
-      --paper:     #f8f7f3;
-      --rule:      rgba(12,12,12,0.11);
+      --bg:         #FBFBF9;
+      --text:       #1A1A1A;
+      --muted:      #6B6B6B;
+      --faint:      rgba(0,0,0,0.35);
+      --border:     rgba(0,0,0,0.08);
+      --blue:       #3b82f6;
+      --smooth:     cubic-bezier(.16,1,.3,1);
+      --serif:      'Playfair Display', 'Georgia', serif;
+      --sans:       'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+      --mono:       'JetBrains Mono', 'Menlo', 'Courier New', monospace;
+      --script:     'Satisfy', cursive;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif;
-      font-weight: 300;
-      line-height: 1.75;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 400;
+      line-height: 1.6;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    /* subtle grid overlay — matches justinmarshall.dev */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,0,0,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        ANIMATED FILM GRAIN
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     #grain {
       position: fixed;
       inset: -30%;
-      width: 160%;
-      height: 160%;
+      width: 160%; height: 160%;
       z-index: 9999;
       pointer-events: none;
-      opacity: 0.045;
+      opacity: 0.038;
       mix-blend-mode: multiply;
-      animation: grain-flicker 0.35s steps(1) infinite;
+      animation: grain-shift 0.4s steps(1) infinite;
       will-change: transform;
     }
-
-    @keyframes grain-flicker {
-      0%   { transform: translate(0%,    0%   ); }
-      11%  { transform: translate(-2%,  -1.5% ); }
-      22%  { transform: translate( 1.5%, 2%   ); }
-      33%  { transform: translate(-1%,   1.5% ); }
-      44%  { transform: translate( 2.5%, -0.5%); }
-      55%  { transform: translate(-1.5%, 2.5% ); }
-      66%  { transform: translate( 1%,  -1%   ); }
-      77%  { transform: translate(-2.5%, 1%   ); }
-      88%  { transform: translate( 0.5%, -2%  ); }
+    @keyframes grain-shift {
+      0%   { transform: translate(0,0); }
+      12%  { transform: translate(-2%, -1.5%); }
+      25%  { transform: translate(1.5%, 2%); }
+      37%  { transform: translate(-1%, 1%); }
+      50%  { transform: translate(2%, -0.5%); }
+      62%  { transform: translate(-1.5%, 2%); }
+      75%  { transform: translate(1%, -1.5%); }
+      87%  { transform: translate(-2%, 0.5%); }
     }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        LAYOUT
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .wrap {
-      max-width: 660px;
+      max-width: 720px;
       margin: 0 auto;
       padding: 0 2rem;
+      position: relative;
+      z-index: 1;
     }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       TOP LINE — draws itself on load
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-    .top-line {
-      height: 1px;
-      background: var(--ink);
-      opacity: 0.13;
-      width: 0;
-      animation: draw-border 1.1s cubic-bezier(0.16,1,0.3,1) 0.15s forwards;
-    }
+    a { text-decoration: none; color: inherit; }
 
-    @keyframes draw-border { to { width: 100%; } }
-
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       HEADER
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-    header {
-      padding: 2rem 0 0;
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       TOP BAR — matches the book reader toolbar feel
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 48px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(251,251,249,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      /* draw border on load */
+      opacity: 0;
+      animation: bar-in 0.5s ease 0.1s forwards;
+    }
+    @keyframes bar-in { to { opacity: 1; } }
+
+    /* macOS traffic lights — pulled directly from justinmarshall.dev */
+    .lights {
+      display: flex;
+      gap: 7px;
       align-items: center;
     }
-
-    .site-label {
-      font-size: 0.65rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--ink-faint);
+    .light {
+      width: 11px; height: 11px;
+      border-radius: 50%;
     }
+    .light-r { background: #ff5f56; }
+    .light-y { background: #ffbd2e; }
+    .light-g { background: #27c93f; }
 
-    /* each character fades in, staggered via JS */
-    .site-label .ch {
-      display: inline-block;
-      opacity: 0;
-      animation: ch-appear 0.01s ease forwards;
+    .bar-title {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
-    @keyframes ch-appear { to { opacity: 1; } }
 
     .scene-counter {
+      font-family: var(--mono);
       font-size: 0.58rem;
-      letter-spacing: 0.14em;
-      color: var(--ink-faint);
-      font-variant-numeric: tabular-nums;
-      font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+      color: var(--muted);
+      letter-spacing: 0.12em;
       opacity: 0;
       transition: opacity 0.4s ease;
     }
     .scene-counter.show { opacity: 1; }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       TOP LINE — draws itself in
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .top-line {
+      height: 1px;
+      background: var(--text);
+      opacity: 0.12;
+      width: 0;
+      animation: draw-line 1.1s var(--smooth) 0.5s forwards;
+    }
+    @keyframes draw-line { to { width: 100%; } }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        HERO
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .hero {
-      padding: 7.5rem 0 5.5rem;
+      padding: 6rem 0 4.5rem;
       text-align: center;
     }
 
-    .hero-eyebrow {
-      font-size: 0.6rem;
-      letter-spacing: 0.26em;
+    .hero-label {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: var(--ink-faint);
-      margin-bottom: 2.75rem;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
       opacity: 0;
-      animation: fade-rise 0.7s ease 1.0s forwards;
+      animation: fade-up 0.6s ease 1s forwards;
     }
 
-    @keyframes fade-rise {
+    @keyframes fade-up {
       from { opacity: 0; transform: translateY(6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    h1 {
-      font-size: clamp(2.6rem, 7vw, 4.2rem);
-      font-weight: 300;
-      letter-spacing: -0.025em;
-      line-height: 1.1;
-      margin-bottom: 2.25rem;
-      overflow: hidden; /* clip the wipe */
+    /* The big headline — Playfair italic, cinematic */
+    .hero-headline {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(2.8rem, 8vw, 4.6rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 2.5rem;
+      overflow: hidden;
     }
 
-    /* line-wipe: text slides up from below */
     .h1-inner {
       display: block;
-      transform: translateY(110%);
-      transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(108%);
+      transition: transform 1s var(--smooth);
     }
     .h1-inner.up { transform: translateY(0); }
 
-    /* blinking cursor, shown briefly after headline lands */
+    /* cursor blink */
     .h1-cursor {
       display: inline-block;
       width: 3px;
-      height: 0.75em;
-      background: var(--ink);
-      margin-left: 4px;
+      height: 0.7em;
+      background: var(--text);
+      margin-left: 3px;
       vertical-align: middle;
       opacity: 0;
     }
     .h1-cursor.blink {
-      animation: cursor-pulse 0.52s step-end 5 forwards;
+      animation: cur 0.55s step-end 5 forwards;
     }
-    @keyframes cursor-pulse {
-      0%, 100% { opacity: 0; }
-      50%       { opacity: 0.8; }
+    @keyframes cur {
+      0%,100% { opacity: 0; }
+      50%      { opacity: 0.8; }
     }
 
     .hero-sub {
-      font-size: 1rem;
-      color: var(--ink-mid);
-      line-height: 1.9;
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      color: var(--muted);
+      line-height: 1.8;
       opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.75s ease, transform 0.75s ease;
+      transform: translateY(8px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
     .hero-sub.show { opacity: 1; transform: translateY(0); }
-    .hero-sub strong { font-weight: 400; color: var(--ink); }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       SVG RULED LINES — draw on scroll
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    /* The name in Satisfy script — matches justinmarshall.dev cover signature */
+    .hero-name {
+      font-family: var(--script);
+      font-size: 2.2rem;
+      font-weight: 400;
+      color: var(--text);
+      display: inline-block;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SVG RULES — draw on scroll
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .rule-svg {
       display: block;
       width: 100%;
@@ -197,302 +251,301 @@
       margin: 5rem 0;
       overflow: visible;
     }
-
     .rule-path {
       fill: none;
-      stroke: var(--ink);
-      stroke-width: 0.6;
-      stroke-opacity: 0.14;
+      stroke: var(--text);
+      stroke-width: 0.5;
+      stroke-opacity: 0.1;
       stroke-dasharray: 800;
       stroke-dashoffset: 800;
-      transition: stroke-dashoffset 1.5s cubic-bezier(0.16,1,0.3,1);
+      transition: stroke-dashoffset 1.6s var(--smooth);
     }
     .rule-path.drawn { stroke-dashoffset: 0; }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       VIDEO — polaroid / developing
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-    .video-frame {
-      position: relative;
-      margin-bottom: 0;
-    }
-
-    /* masking tape strips */
-    .tape {
-      position: absolute;
-      width: 42px;
-      height: 13px;
-      background: rgba(195,178,142,0.38);
-      z-index: 4;
-      pointer-events: none;
-    }
-    .tape::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        90deg,
-        transparent, transparent 3px,
-        rgba(255,255,255,0.12) 3px, rgba(255,255,255,0.12) 4px
-      );
-    }
-    .tape-tl { top: -6px;  left: 22px;  transform: rotate(-1.5deg); }
-    .tape-tr { top: -6px;  right: 22px; transform: rotate(1.8deg);  }
-    .tape-bl { bottom: -6px; left: 22px;  transform: rotate(1deg);  }
-    .tape-br { bottom: -6px; right: 22px; transform: rotate(-1.3deg); }
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       VIDEO — elegant book-photo style
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .video-section { position: relative; }
 
     .video-wrap {
       position: relative;
       width: 100%;
       aspect-ratio: 16/9;
       background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
       overflow: hidden;
-      /* "undeveloped" state */
-      filter: brightness(0.05) blur(6px) saturate(0);
-      transition: filter 2.2s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.09);
+      /* developing effect */
+      filter: brightness(0.04) blur(8px);
+      transition: filter 2.4s var(--smooth);
     }
     .video-wrap.developed {
-      filter: brightness(1) blur(0) saturate(1);
+      filter: brightness(1) blur(0);
     }
 
-    /* vignette overlay */
-    .video-wrap::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.28) 100%);
-      pointer-events: none;
-      z-index: 3;
-    }
-
-    /* registration corner marks */
-    .video-wrap::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        /* TL */
-        linear-gradient(var(--paper), var(--paper)) top left / 12px 1px no-repeat,
-        linear-gradient(var(--paper), var(--paper)) top left / 1px 12px no-repeat,
-        /* BR */
-        linear-gradient(var(--paper), var(--paper)) bottom right / 12px 1px no-repeat,
-        linear-gradient(var(--paper), var(--paper)) bottom right / 1px 12px no-repeat;
-      opacity: 0.18;
-      pointer-events: none;
-      z-index: 3;
-    }
-
-    .video-wrap iframe,
     .video-wrap video {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       border: none;
       z-index: 1;
+      object-fit: contain;
+      background: #0a0a0a;
     }
 
-    .video-placeholder {
+    /* loading overlay — shows while video metadata fetches */
+    .video-loading {
       position: absolute;
       inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 1rem;
-      color: rgba(255,255,255,0.25);
-      font-size: 0.62rem;
-      letter-spacing: 0.2em;
+      gap: 1.1rem;
+      color: rgba(255,255,255,0.3);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       z-index: 2;
+      transition: opacity 0.7s ease;
     }
+    .video-loading.hidden { opacity: 0; pointer-events: none; }
+
+    /* spinner ring */
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-top-color: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .video-caption {
       text-align: center;
-      font-size: 0.58rem;
-      color: var(--ink-faint);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-top: 1.5rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 1.25rem;
     }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       SECTION REVEALS — clip-path wipe
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION REVEALS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .reveal {
-      clip-path: inset(48px 0 0 0);
+      clip-path: inset(44px 0 0 0);
       opacity: 0;
       transition:
-        clip-path 1s cubic-bezier(0.16,1,0.3,1),
-        opacity    0.7s ease;
+        clip-path 1s var(--smooth),
+        opacity   0.7s ease;
     }
     .reveal.in {
-      clip-path: inset(0px 0 0 0);
+      clip-path: inset(0 0 0 0);
       opacity: 1;
     }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        SECTION LABELS
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-    .label {
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .sec-label {
+      font-family: var(--mono);
       font-size: 0.58rem;
-      letter-spacing: 0.26em;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: var(--ink-faint);
+      color: var(--muted);
+      opacity: 0.7;
       text-align: center;
       margin-bottom: 3rem;
-      font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
     }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       STATEMENT
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       STATEMENT — drop cap + serif
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .statement { text-align: center; }
 
-    .statement p {
-      font-size: 1.05rem;
-      color: var(--ink-mid);
-      line-height: 1.95;
-      max-width: 500px;
+    .statement-body {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      line-height: 1.85;
+      color: var(--text);
+      max-width: 540px;
       margin: 0 auto;
     }
-    .statement p + p {
-      margin-top: 2rem;
-      font-weight: 400;
-      color: var(--ink);
+
+    .statement-body p + p {
+      margin-top: 1.75rem;
     }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       CREDENTIALS — stagger on scroll
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    /* drop cap — matches justinmarshall.dev chapter style */
+    .drop-cap {
+      float: left;
+      font-family: var(--serif);
+      font-size: 5.2rem;
+      line-height: 0.78;
+      padding-top: 6px;
+      padding-right: 10px;
+      padding-left: 2px;
+      color: var(--text);
+    }
+
+    .statement-coda {
+      margin-top: 2rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--muted);
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       CREDENTIALS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .credentials { text-align: center; }
 
     .cred-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 1.15rem;
+      gap: 1.2rem;
     }
 
     .cred-list li {
-      font-size: 0.95rem;
-      color: var(--ink-mid);
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      color: var(--text);
+      opacity: 0.9;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 1rem;
+      position: relative;
+      padding-left: 1.5rem;
+      /* stagger reveal */
       opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.55s ease, transform 0.55s ease;
+      transform: translateY(8px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
-    .cred-list li.in {
-      opacity: 1;
-      transform: translateY(0);
+    .cred-list li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--muted);
     }
-
-    .cred-rule {
-      display: inline-block;
-      width: 16px;
-      height: 1px;
-      background: var(--ink-faint);
-      flex-shrink: 0;
-    }
+    .cred-list li.in { opacity: 1; transform: translateY(0); }
 
     .cred-note {
-      font-size: 0.72rem;
-      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
     }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        BUILDING
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .building { text-align: center; }
 
-    .building p {
-      font-size: 1rem;
-      color: var(--ink-mid);
-      line-height: 1.9;
+    .building-body {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      line-height: 1.85;
+      color: var(--text);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .v1-note {
+      display: inline-block;
+      margin-top: 2rem;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      padding-bottom: 3px;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       CTA — contact card grid
+       matches justinmarshall.dev contact section
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .cta-section {
+      text-align: center;
+      padding: 1.5rem 0 8rem;
+    }
+
+    .cta-headline {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      color: var(--text);
+      margin-bottom: 3.5rem;
+      line-height: 1.15;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
       max-width: 460px;
       margin: 0 auto;
     }
 
-    .v1 {
-      display: inline-block;
-      margin-top: 1.75rem;
-      font-size: 0.72rem;
-      color: var(--ink-faint);
-      letter-spacing: 0.1em;
-      padding-bottom: 3px;
-      border-bottom: 1px solid var(--rule);
-    }
-
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       CTA
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-    .cta-section {
-      text-align: center;
-      padding: 1.5rem 0 9rem;
-    }
-
-    .cta-headline {
-      font-size: clamp(1.8rem, 4.5vw, 2.5rem);
-      font-weight: 300;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-      margin-bottom: 3rem;
-    }
-
-    /* ink-fill button */
-    .cta-btn {
-      display: inline-block;
-      position: relative;
-      padding: 1rem 2.6rem;
-      border: 1px solid var(--ink);
-      color: var(--ink);
+    .contact-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 28px 20px;
+      background: rgba(0,0,0,0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
       text-decoration: none;
-      font-size: 0.7rem;
-      font-weight: 400;
-      letter-spacing: 0.2em;
+      transition: all 0.3s var(--smooth);
+      cursor: pointer;
+    }
+
+    .contact-card svg {
+      opacity: 0.5;
+      transition: opacity 0.3s ease;
+    }
+
+    .contact-card-title {
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .contact-card-sub {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
       text-transform: uppercase;
-      font-family: inherit;
-      overflow: hidden;
-      transition: color 0.45s ease;
     }
 
-    /* ink flood from left */
-    .cta-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--ink);
-      transform: translateX(-102%);
-      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
-      z-index: 0;
+    .contact-card:hover {
+      background: #fff;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+      border-color: var(--blue);
+      color: var(--blue);
     }
-    .cta-btn:hover::before { transform: translateX(0); }
-    .cta-btn:hover { color: var(--paper); }
+    .contact-card:hover svg { opacity: 1; }
+    .contact-card:hover .contact-card-title { color: var(--blue); }
 
-    .btn-text { position: relative; z-index: 1; }
-
-    /* corner registration marks on button */
-    .btn-corner {
-      position: absolute;
-      width: 7px;
-      height: 7px;
-      z-index: 2;
-      transition: border-color 0.45s ease;
-    }
-    .btn-corner.tl { top:-2px;    left:-2px;  border-top:1px solid var(--ink);    border-left:1px solid var(--ink);    }
-    .btn-corner.tr { top:-2px;    right:-2px; border-top:1px solid var(--ink);    border-right:1px solid var(--ink);   }
-    .btn-corner.bl { bottom:-2px; left:-2px;  border-bottom:1px solid var(--ink); border-left:1px solid var(--ink);    }
-    .btn-corner.br { bottom:-2px; right:-2px; border-bottom:1px solid var(--ink); border-right:1px solid var(--ink);   }
-    .cta-btn:hover .btn-corner { border-color: var(--paper); }
-
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        FOOTER
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     footer {
-      border-top: 1px solid var(--rule);
+      border-top: 1px solid var(--border);
       padding: 1.75rem 0;
     }
     .footer-inner {
@@ -501,167 +554,186 @@
       align-items: center;
     }
     .footer-mark {
-      font-size: 0.58rem;
-      color: var(--ink-faint);
-      letter-spacing: 0.12em;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--muted);
     }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        RESPONSIVE
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-    @media (max-width: 500px) {
-      .wrap       { padding: 0 1.25rem; }
-      .hero       { padding: 5rem 0 4rem; }
-      .tape       { display: none; }
-      .rule-svg   { margin: 3.5rem 0; }
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    @media (max-width: 520px) {
+      .wrap { padding: 0 1.25rem; }
+      .top-bar { padding: 0 1.25rem; }
+      .hero { padding: 4rem 0 3.5rem; }
+      .contact-grid { grid-template-columns: 1fr; gap: 12px; }
+      .contact-card { flex-direction: row; justify-content: flex-start; padding: 20px 18px; }
+      .rule-svg { margin: 3.5rem 0; }
       .footer-inner { flex-direction: column; gap: 0.4rem; }
+      .bar-title { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- animated film grain canvas -->
+  <!-- animated grain -->
   <div id="grain" aria-hidden="true"></div>
+
+  <!-- toolbar — justinmarshall.dev reader style -->
+  <div class="top-bar">
+    <div class="lights" aria-hidden="true">
+      <div class="light light-r"></div>
+      <div class="light light-y"></div>
+      <div class="light light-g"></div>
+    </div>
+    <span class="bar-title">youllknow.me</span>
+    <span class="scene-counter" id="sceneCounter">[ 001 ]</span>
+  </div>
 
   <div class="top-line"></div>
 
   <div class="wrap">
-    <header>
-      <span class="site-label" id="siteLabel" aria-label="youllknow.me"></span>
-      <span class="scene-counter" id="sceneCounter">[ 001 ]</span>
-    </header>
 
     <!-- ① HERO -->
     <section class="hero" data-scene="1">
-      <p class="hero-eyebrow">01 &nbsp;/&nbsp; you found it early</p>
-      <h1>
-        <span class="h1-inner" id="h1Inner">You found it early.<span class="h1-cursor" id="cursor"></span></span>
-      </h1>
+      <p class="hero-label">01 &nbsp;/&nbsp; introduction</p>
+
+      <div class="hero-headline">
+        <span class="h1-inner" id="h1Inner">
+          You found it early.<span class="h1-cursor" id="cursor"></span>
+        </span>
+      </div>
+
       <p class="hero-sub" id="heroSub">
-        My name is <strong>Justin Marshall.</strong><br />
+        My name is <span class="hero-name">Justin Marshall.</span><br />
         This is just the beginning.
       </p>
     </section>
 
     <!-- ② VIDEO -->
-    <section class="reveal" data-scene="1">
-      <div class="video-frame">
-        <div class="tape tape-tl"></div>
-        <div class="tape tape-tr"></div>
-        <div class="video-wrap" id="videoWrap">
-          <!--
-            ╔══════════════════════════════════════════════════╗
-            ║  SWAP IN YOUR VIDEO HERE                         ║
-            ║                                                  ║
-            ║  YouTube:                                        ║
-            ║  <iframe                                         ║
-            ║    src="https://www.youtube.com/embed/VIDEO_ID"  ║
-            ║    allow="autoplay; fullscreen"                  ║
-            ║    allowfullscreen>                              ║
-            ║  </iframe>                                       ║
-            ║                                                  ║
-            ║  Self-hosted:                                    ║
-            ║  <video src="your-video.mp4" controls></video>   ║
-            ╚══════════════════════════════════════════════════╝
-          -->
-          <div class="video-placeholder">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
-              <polygon points="5 3 19 12 5 21 5 3"/>
-            </svg>
-            <span>your video here</span>
-          </div>
+    <section class="video-section reveal" data-scene="1">
+      <div class="video-wrap" id="videoWrap">
+        <!--
+          src is injected by JS only when this section scrolls into view.
+          preload="metadata" means the browser fetches ~256 KB max up front
+          (just enough for duration + first frame), then streams on play.
+          The Vercel Blob CDN supports HTTP range requests so seek is instant.
+        -->
+        <video
+          id="mainVideo"
+          data-src="https://pgymewdwmtr4w6k3.public.blob.vercel-storage.com/copy_BBE3B00B-A09B-4C86-B190-A80742F6CC56.mp4"
+          controls
+          playsinline
+          preload="metadata"
+        ></video>
+
+        <!-- spinner shown until metadata loads -->
+        <div class="video-loading" id="videoLoading">
+          <div class="spinner"></div>
+          <span>loading</span>
         </div>
-        <div class="tape tape-bl"></div>
-        <div class="tape tape-br"></div>
       </div>
-      <p class="video-caption">— watch this first —</p>
+      <p class="video-caption">watch this first</p>
     </section>
 
     <!-- rule -->
-    <svg class="rule-svg" viewBox="0 0 660 1" preserveAspectRatio="none">
-      <line class="rule-path" x1="0" y1="0.5" x2="660" y2="0.5" />
+    <svg class="rule-svg" viewBox="0 0 720 1" preserveAspectRatio="none">
+      <line class="rule-path" x1="0" y1="0.5" x2="720" y2="0.5" />
     </svg>
 
     <!-- ③ STATEMENT -->
     <section class="statement reveal" data-scene="2">
-      <p class="label">02 &nbsp;/&nbsp; what I stand for</p>
-      <p>
-        I fight every day to build the skills to change the world.<br />
-        To solve problems.<br />
-        To make life easier for the people who come after us.
-      </p>
-      <p>
-        This isn't the end.<br />
-        I'm just getting started.
-      </p>
+      <p class="sec-label">02 &nbsp;/&nbsp; what I stand for</p>
+      <div class="statement-body">
+        <p>
+          <span class="drop-cap">I</span>
+          fight every day to build the skills to change the world.
+          To solve problems.
+          To make life easier for the people who come after us.
+        </p>
+        <p class="statement-coda">
+          This isn't the end.<br />
+          I'm just getting started.
+        </p>
+      </div>
     </section>
 
     <!-- rule -->
-    <svg class="rule-svg" viewBox="0 0 660 1" preserveAspectRatio="none">
-      <line class="rule-path" x1="0" y1="0.5" x2="660" y2="0.5" />
+    <svg class="rule-svg" viewBox="0 0 720 1" preserveAspectRatio="none">
+      <line class="rule-path" x1="0" y1="0.5" x2="720" y2="0.5" />
     </svg>
 
     <!-- ④ CREDENTIALS -->
     <section class="credentials" data-scene="3">
-      <p class="label reveal">03 &nbsp;/&nbsp; what I've done</p>
+      <p class="sec-label reveal">03 &nbsp;/&nbsp; what I've done</p>
       <ul class="cred-list" id="credList">
+        <li>Worked at Apple</li>
         <li>
-          <span class="cred-rule"></span>
-          Worked at Apple
-        </li>
-        <li>
-          <span class="cred-rule"></span>
           Won a national hackathon solo
           <span class="cred-note">(Handshake)</span>
         </li>
-        <li>
-          <span class="cred-rule"></span>
-          Built products from nothing
-        </li>
-        <li>
-          <span class="cred-rule"></span>
-          Met and learned from founders and CEOs
-        </li>
+        <li>Built products from nothing</li>
+        <li>Met and learned from founders and CEOs</li>
       </ul>
     </section>
 
     <!-- rule -->
-    <svg class="rule-svg" viewBox="0 0 660 1" preserveAspectRatio="none">
-      <line class="rule-path" x1="0" y1="0.5" x2="660" y2="0.5" />
+    <svg class="rule-svg" viewBox="0 0 720 1" preserveAspectRatio="none">
+      <line class="rule-path" x1="0" y1="0.5" x2="720" y2="0.5" />
     </svg>
 
     <!-- ⑤ BUILDING -->
     <section class="building reveal" data-scene="4">
-      <p class="label">04 &nbsp;/&nbsp; what I'm building</p>
-      <p>
+      <p class="sec-label">04 &nbsp;/&nbsp; what I'm building</p>
+      <p class="building-body">
         I'm focused on building tools, systems, and products<br />
         that actually solve real problems.
       </p>
-      <span class="v1">This is only version 1.</span>
+      <span class="v1-note">This is only version 1.</span>
     </section>
 
     <!-- rule -->
-    <svg class="rule-svg" viewBox="0 0 660 1" preserveAspectRatio="none">
-      <line class="rule-path" x1="0" y1="0.5" x2="660" y2="0.5" />
+    <svg class="rule-svg" viewBox="0 0 720 1" preserveAspectRatio="none">
+      <line class="rule-path" x1="0" y1="0.5" x2="720" y2="0.5" />
     </svg>
 
     <!-- ⑥ CTA -->
     <section class="cta-section reveal" data-scene="5">
       <h2 class="cta-headline">Remember this moment.</h2>
-      <!--
-        Replace href with your LinkedIn or email:
-          LinkedIn  →  https://linkedin.com/in/YOUR-HANDLE
-          Email     →  mailto:your@email.com
-      -->
-      <a class="cta-btn" href="mailto:jmarshall@saivvi.com" target="_blank" rel="noopener">
-        <span class="btn-corner tl"></span>
-        <span class="btn-corner tr"></span>
-        <span class="btn-corner bl"></span>
-        <span class="btn-corner br"></span>
-        <span class="btn-text">Connect with me</span>
-      </a>
+
+      <div class="contact-grid">
+        <a class="contact-card"
+           href="https://www.linkedin.com/in/jmarshallofficial/"
+           target="_blank"
+           rel="noopener noreferrer">
+          <!-- LinkedIn icon -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/>
+            <circle cx="4" cy="4" r="2"/>
+          </svg>
+          <span class="contact-card-title">Connect with me</span>
+          <span class="contact-card-sub">LinkedIn</span>
+        </a>
+
+        <a class="contact-card"
+           href="https://justinmarshall.dev"
+           target="_blank"
+           rel="noopener noreferrer">
+          <!-- Globe icon -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span class="contact-card-title">See my work</span>
+          <span class="contact-card-sub">justinmarshall.dev</span>
+        </a>
+      </div>
     </section>
-  </div>
+
+  </div><!-- /wrap -->
 
   <footer>
     <div class="wrap">
@@ -673,101 +745,82 @@
   </footer>
 
   <script>
-    /* ── grain texture (injected via JS to avoid CSS encoding issues) ── */
+    /* ── grain texture ── */
     document.getElementById('grain').style.backgroundImage =
       `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")`;
 
-    /* ── site label: char-by-char reveal ── */
-    const labelEl = document.getElementById('siteLabel');
-    'youllknow.me'.split('').forEach((ch, i) => {
-      const span = document.createElement('span');
-      span.className = 'ch';
-      span.style.animationDelay = `${0.55 + i * 0.06}s`;
-      span.textContent = ch;
-      labelEl.appendChild(span);
+    /* ── hero headline wipe ── */
+    setTimeout(() => document.getElementById('h1Inner').classList.add('up'), 400);
+
+    /* ── cursor blink ── */
+    setTimeout(() => document.getElementById('cursor').classList.add('blink'), 1150);
+
+    /* ── hero sub ── */
+    setTimeout(() => document.getElementById('heroSub').classList.add('show'), 1050);
+
+    /* ── scene counter ── */
+    const counter = document.getElementById('sceneCounter');
+    setTimeout(() => counter.classList.add('show'), 1400);
+
+    const sceneEls = document.querySelectorAll('[data-scene]');
+    sceneEls.forEach(el => {
+      new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting)
+            counter.textContent = `[ ${e.target.dataset.scene.padStart(3,'0')} ]`;
+        });
+      }, { threshold: 0.45 }).observe(el);
     });
 
-    /* ── hero headline: line wipe ── */
-    const h1Inner = document.getElementById('h1Inner');
-    setTimeout(() => h1Inner.classList.add('up'), 350);
-
-    /* ── cursor blink after headline lands ── */
-    const cursor = document.getElementById('cursor');
-    setTimeout(() => {
-      cursor.classList.add('blink');
-    }, 1100);
-
-    /* ── hero sub fade in ── */
-    setTimeout(() => {
-      document.getElementById('heroSub').classList.add('show');
-    }, 1050);
-
-    /* ── scene counter reveal ── */
-    const counter = document.getElementById('sceneCounter');
-    setTimeout(() => counter.classList.add('show'), 1600);
-
-    /* ── scene counter update on scroll ── */
-    const sceneEls = document.querySelectorAll('[data-scene]');
-    const sceneIO = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          const n = e.target.dataset.scene.padStart(3, '0');
-          counter.textContent = `[ ${n} ]`;
-        }
-      });
-    }, { threshold: 0.45 });
-    sceneEls.forEach(el => sceneIO.observe(el));
-
     /* ── section clip-path reveals ── */
-    const reveals = document.querySelectorAll('.reveal');
     const revealIO = new IntersectionObserver(entries => {
       entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          revealIO.unobserve(e.target);
-        }
+        if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); }
       });
     }, { threshold: 0.08 });
-    reveals.forEach(el => revealIO.observe(el));
+    document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
 
-    /* ── SVG rules draw left → right ── */
-    const rulePaths = document.querySelectorAll('.rule-path');
+    /* ── SVG rules draw ── */
     const ruleIO = new IntersectionObserver(entries => {
       entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('drawn');
-          ruleIO.unobserve(e.target);
-        }
+        if (e.isIntersecting) { e.target.classList.add('drawn'); ruleIO.unobserve(e.target); }
       });
     }, { threshold: 0.5 });
-    rulePaths.forEach(r => ruleIO.observe(r));
+    document.querySelectorAll('.rule-path').forEach(r => ruleIO.observe(r));
 
-    /* ── video: develop (photo darkroom effect) ── */
-    const videoWrap = document.getElementById('videoWrap');
-    const videoIO = new IntersectionObserver(entries => {
+    /* ── video: lazy-load src, then develop on metadata ready ── */
+    const vw      = document.getElementById('videoWrap');
+    const vid     = document.getElementById('mainVideo');
+    const loading = document.getElementById('videoLoading');
+
+    function developVideo() {
+      vw.classList.add('developed');
+      loading.classList.add('hidden');
+    }
+
+    // inject src only when the section scrolls into view — nothing loads before then
+    new IntersectionObserver(entries => {
       entries.forEach(e => {
-        if (e.isIntersecting) {
-          /* small delay makes the "developing" feel more intentional */
-          setTimeout(() => videoWrap.classList.add('developed'), 280);
-          videoIO.unobserve(e.target);
+        if (!e.isIntersecting) return;
+        if (!vid.src) {
+          vid.src = vid.dataset.src;
+          // reveal once metadata (first frame + duration) is available
+          vid.addEventListener('loadedmetadata', developVideo, { once: true });
+          // fallback: if slow connection, develop after 4 s anyway
+          setTimeout(developVideo, 4000);
         }
       });
-    }, { threshold: 0.25 });
-    videoIO.observe(videoWrap);
+    }, { threshold: 0.15 }).observe(vw);
 
-    /* ── credentials: staggered slide-up ── */
+    /* ── credential stagger ── */
     const credItems = document.querySelectorAll('#credList li');
-    const credIO = new IntersectionObserver(entries => {
+    new IntersectionObserver(entries => {
       entries.forEach(e => {
-        if (e.isIntersecting) {
-          credItems.forEach((li, i) =>
-            setTimeout(() => li.classList.add('in'), i * 130)
-          );
-          credIO.unobserve(e.target);
-        }
+        if (e.isIntersecting)
+          credItems.forEach((li,i) => setTimeout(() => li.classList.add('in'), i * 130));
       });
-    }, { threshold: 0.2 });
-    if (credItems.length) credIO.observe(document.getElementById('credList'));
+    }, { threshold: 0.2 }).observe(document.getElementById('credList'));
   </script>
+
 </body>
 </html>
